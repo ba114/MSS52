@@ -1,5 +1,6 @@
 # MSS52
-Development of RomRaider definitions for MSS52 variant 1701
+Development of RomRaider definitions for MSS52 variant 1701.
+
 Only 1701 (Hardware ID 7843317) will officially be supported by these definitions.
 
 Requests to merge definitions for any other variants will be rejected.
