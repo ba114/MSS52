@@ -1,0 +1,551 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE roms [
+
+<!ELEMENT roms ( rom+ ) >
+<!ENTITY deg    "&#176;" ><!-- degree sign -->
+<!ENTITY micro  "&#181;" ><!-- micro sign -->
+
+<!ELEMENT rom ( romid, table+ ) >
+<!ATTLIST rom base CDATA #IMPLIED>
+
+<!ELEMENT romid ( xmlid, internalidaddress, internalidstring, caseid?, ecuid, year, market, make, model, submodel, transmission, flashmethod?, memmodel, filesize, obsolete? ) >
+
+<!ELEMENT xmlid (#PCDATA) >
+<!ELEMENT internalidaddress (#PCDATA) >
+<!ELEMENT internalidstring (#PCDATA) >
+<!ELEMENT caseid (#PCDATA) >
+<!ELEMENT ecuid (#PCDATA) >
+<!ELEMENT year (#PCDATA) >
+<!ELEMENT market (#PCDATA) >
+<!ELEMENT make (#PCDATA) >
+<!ELEMENT model (#PCDATA) >
+<!ELEMENT submodel (#PCDATA) >
+<!ELEMENT transmission (#PCDATA) >
+<!ELEMENT flashmethod (#PCDATA) >
+<!ELEMENT memmodel (#PCDATA) >
+<!ELEMENT filesize (#PCDATA) >
+<!ELEMENT obsolete (#PCDATA) >
+
+<!ELEMENT table ( #PCDATA | scaling | table | description | data | state )* >
+<!ATTLIST table
+	type NMTOKENS #IMPLIED
+	name CDATA #IMPLIED
+	category CDATA #IMPLIED
+	storagetype CDATA #IMPLIED
+	endian (little | big) #IMPLIED
+	sizex CDATA #IMPLIED
+	sizey CDATA #IMPLIED
+	userlevel (1 | 2 | 3 | 4 | 5) #IMPLIED
+	logparam CDATA #IMPLIED
+	storageaddress CDATA #IMPLIED >
+
+<!ELEMENT scaling EMPTY >
+<!ATTLIST scaling
+	units CDATA #REQUIRED
+	expression CDATA #REQUIRED
+	to_byte CDATA #REQUIRED
+	format CDATA #REQUIRED
+	fineincrement CDATA #REQUIRED
+	coarseincrement CDATA #REQUIRED >
+
+<!ELEMENT description (#PCDATA) >
+
+<!ELEMENT data (#PCDATA) >
+
+<!ELEMENT state (#PCDATA) >
+<!ATTLIST state
+	name CDATA #REQUIRED
+	data CDATA #REQUIRED >
+]>
+<roms>
+  <rom>
+    <!--
+v0.0.1
+	- draft of MSS52
+
+	In this BASE section define all the common table data and axis attributes.
+    Leave out the ROM specific addresses.
+-->
+  <romid>
+   <xmlid>BMWMSS5XBASE</xmlid>
+   <internalidaddress>0000</internalidaddress>
+   <internalidstring>0000</internalidstring>
+   <ecuid>0000</ecuid>
+   <year>1999-2005</year>
+   <market>USDM</market>
+   <make>BMW</make>
+   <model>E39 M5</model>
+   <submodel>MSS52</submodel>
+   <transmission>MT/AT</transmission>
+  </romid>
+  
+<table type="Switch" name="EWS Delete" category="Config Switches" sizey="2" userlevel="5">
+	<state name="EWS - Enable" data="64 00" />
+	<state name="EWS - Disable" data="64 01" />
+	<description>Use this Switch to delete EWS
+You will need to supress DTCs 66,130,148 </description>
+</table>
+
+<table type="3D" name="Fuel Injection - WOT Enrichment" category="Fuel" storagetype="uint8" endian="little" sizex="18" sizey="3" userlevel="1" >
+   <scaling units="%" expression="x*0.083333" to_byte="x/0.083333" format="0.00" fineincrement="0.01" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="TPS %" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="0" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_TI_N_RF_VL) Enrichment % for fuel under full throttle conditions</description>
+</table>
+
+<table type="3D" name="Fuel Injection - Scalar" category="Fuel" storagetype="uint8" endian="little" sizex="18" sizey="12" userlevel="1" >
+   <scaling units="Multiplier" expression="x*0.007813" to_byte="x/0.007813" format="0.00" fineincrement=".01" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big" logparam="E2" >
+    <scaling units="RPM" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Load" storagetype="uint16" endian="big"  logparam="P8" >
+    <scaling units="mg/stk" expression="x" to_byte="x" format="#" fineincrement="50" coaeincrement="100" />
+   </table>
+   <description>(KF_TI_N_RF) This map acts as a scalar to the stock fuel map. Values in this table are multiplied to Fuel Injection - Base</description>
+</table>
+  
+<table type="2D" name="Fuel Injection - Dead Time" category="Fuel" storagetype="uint16" endian="big" sizey="5" userlevel="1" >
+   <scaling units="ms" expression="x*0.001" to_byte="x/0.001" format="0.000" fineincrement=".01" coarseincrement="0.1" />
+   <table type="X Axis" name="Volts" storagetype="uint16" endian="big" >
+    <scaling units="V" expression="x*0.1" to_byte="x/0.1" format="0.0" fineincrement="0.01" coarseincrement="0.1" />
+   </table>
+   <description>(KF_TI_UB) This map is the Fuel injector dead time, which is added to the calculated IPW</description>
+</table>
+
+
+<table type="2D" name="Fuel Injection - Minimum IPW" category="Fuel" storagetype="uint16" endian="little" sizey="1" userlevel="1">
+	<scaling units="ms" expression="x*.001" to_byte="x/.001"  format="0.000" fineincrement="0.001" coarseincrement="1" />
+	<table type="Static Y Axis" name="Minimum IPW" sizey="1">
+	<data>Minimum Injector Pulse Width</data>
+	</table>
+	<description>(K_TI_MIN) Use this table to lower the Minimum IPW limit in the DME. Needed for larger injectors</description>
+</table>  
+
+<table type="2D" name="Fuel Injection - Maximum IPW" category="Fuel" storagetype="uint16" endian="little" sizey="1" userlevel="1">
+	<scaling units="ms" expression="x*.001" to_byte="x/.001"  format="0.000" fineincrement="0.001" coarseincrement="1" />
+	<table type="Static Y Axis" name="Minimum IPW" sizey="1">
+	<data>Maximum Injector Pulse Width</data>
+	</table>
+	<description>(K_TI_MAX) Use this table to adjust the Maximum IPW limit in the DME. Needed for larger injectors</description>
+</table>
+
+<table type="3D" name="Ignition Timing - Base" category="Timing" storagetype="uint16" endian="big" sizex="18" sizey="12" userlevel="1" >
+   <scaling units="deg" expression="x*0.1" to_byte="x/0.1" format="0.00" fineincrement=".01" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Load" storagetype="uint16" endian="big">
+    <scaling units="mg/stk" expression="x" to_byte="x" format="#" fineincrement="50" coaeincrement="100" />
+   </table>
+   <description>(KF_TZ_GRUND) This is the main ignition timing advance map</description>
+</table> 
+ 
+<table type="2D" name="Engine Rev Limit by Gear" category="Limiters" storagetype="int16" endian="big" sizey="8" userlevel="1" >
+   <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="50" />
+   <table type="X Axis" name="Gear" storagetype="uint16" endian="big" >
+    <scaling units="Gear" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <description>(KL_N_MAX) Engine rev limit by gear</description>
+</table>
+
+<table type="2D" name="Vehicle Speed Limit by Gear" category="Limiters" storagetype="uint16" endian="big" sizey="8" userlevel="1" >
+   <scaling units="km/h" expression="x*0.0625" to_byte="x/0.0625" format="0" fineincrement="1" coarseincrement="10" />
+   <table type="X Axis" name="Gear" storagetype="uint16" endian="big" >
+    <scaling units="Gear" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <description>(KL_V_MAX_GANG) Vehicle Speed Limit by Gear</description>
+</table>
+ 
+ <table type="2D" name="MAF Scalar" category="Scalars" storagetype="uint16" endian="big" sizey="33" userlevel="1" >
+   <scaling units="kg/hr" expression="x*0.15625" to_byte="x/0.15625" format="0.00" fineincrement="1" coarseincrement="10" />
+   <table type="X Axis" name="Volts" storagetype="uint16" endian="big" >
+    <scaling units="Volts" expression="x*0.15625" to_byte="x/0.15625" format="0.00" fineincrement="0.1" coarseincrement="1" />
+   </table>
+   <description>This is the scaling for the MAF sensor</description>
+</table>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<table type="3D" name="DTC - Set 1" category="DTCs" storagetype="uint8" endian="little"  userlevel="1" sizey="127" sizex="14" >
+   <scaling units="Decimal" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="5" />
+   <table type="Static X Axis" name="Byte" sizex="14">
+		<data>DTC Number</data>   
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data>Modifier</data>
+		<data></data>
+	</table>
+	<table type="Static Y Axis" name="DTC" sizey="127">
+		<data>(53) Interface, electric fan (E46)/relay, electric fan, stage 2 (E36/7)</data>
+		<data>(130) EWS 3.3 tampering protection</data>
+		<data>(16) Signal, crankshaft sensor</data>
+		<data>(156) Storing adaptation values not possible</data>
+		<data>(157) DME memory fault</data>
+		<data>(43) Signal, temperature sensor, radiator outlet</data>
+		<data>(30) Internal DME fault</data>
+		<data>(1) Driver/relay, fuel pump</data>
+		<data>(122) DME internal processor check</data>
+		<data>(54) System voltage, main relay</data>
+		<data>(126) Crash deactivation, fuel pump</data>
+		<data>(13) Signal, oxygen sensor before cat., cyl. 1-3</data>
+		<data>(12) Signal, oxygen sensor before cat., cyl. 4-6</data>
+		<data>(36) Tank venting valve</data>
+		<data>(65) Signal, throttle potentiometer and el. throttle actuator</data>
+		<data>(144) Function, oxygen sensor control, cyl. 1-3</data>
+		<data>(145) Function, oxygen sensor control, cyl. 4-6</data>
+		<data>(123) No CAN-bus signal from SMG</data>
+		<data>(7) Signal, camshaft sensor, inlet</data>
+		<data>(10) Signal, camshaft sensor, exhaust</data>
+		<data>(67) Inlet VANOS, advance valve</data>
+		<data>(72) Inlet VANOS, retard valve</data>
+		<data>(22) Exhaust VANOS, advance valve</data>
+		<data>(21) Exhaust VANOS, retard valve</data>
+		<data>(124) Activation, active engine mount</data>
+		<data>(125) Function lamp, oil level</data>
+		<data>(110) Function light, switch, driving dynamics</data>
+		<data>(127) Activation, DMTL pump</data>
+		<data>(46) Output, consumption signal KVA</data>
+		<data>(47) Output, engine-speed signal TD</data>
+		<data>(6) Timeout SMG-CAN</data>
+		<data>(66) EWS interface: no communication</data>
+		<data>(3) Fuel injector, cyl. 1</data>
+		<data>(5) Fuel injector, cyl. 2</data>
+		<data>(4) Fuel injector, cyl. 3</data>
+		<data>(33) Fuel injector, cyl. 4</data>
+		<data>(31) Fuel injector, cyl. 5</data>
+		<data>(32) Fuel injector, cyl. 6</data>
+		<data>(34) Fuel injector, cyl. 7</data>
+		<data>(35) Fuel injector, cyl. 8</data>
+		<data>(80) Switch chain, frictional connection</data>
+		<data>(158) Reset DME possibly due to overspeed</data>
+		<data>(27) DMTL changeover valve</data>
+		<data>(174) Multiplicative mixture adaptation, cyl. 1-3 control limit reached</data>
+		<data>(175) Multiplicative mixture adaptation, cyl. 4-6 control limit reached</data>
+		<data>(176) Abort, Tank leakage diagnosis, due to moisture</data>
+		<data>(177) MIL lights up due to prompt from SMG</data>
+		<data>(178) Catalytic converter conversion, cyl. 1-3</data>
+		<data>(179) Catalytic converter conversion, cyl. 4-6</data>
+		<data>(180) Tank leak detected</data>
+		<data>(181) Fuel filler cap open/missing</data>
+		<data>(28) Function, map cooling</data>
+		<data>(18) VANOS pressure-accumulator valve</data>
+		<data>(87) Signal, oxygen sensor after cat., cyl. 1-3</data>
+		<data>(88) Signal, oxygen sensor after cat., cyl. 4-6</data>
+		<data>(37) Oxygen sensor heater before cat., cyl. 1-3</data>
+		<data>(38) Oxygen sensor heater before cat., cyl. 4-6</data>
+		<data>(39) Oxygen sensor heater after cat., cyl. 1-3</data>
+		<data>(40) Oxygen sensor heater after cat., cyl. 4-6</data>
+		<data>(151) Internal DME fault</data>
+		<data>(90) Trim control, cyl. 1-3</data>
+		<data>(91) Trim control, cyl. 4-6</data>
+		<data>(92) Oxygen sensor after cat., cyl. 1-3: voltage monitoring</data>
+		<data>(93) Oxygen sensor after cat., cyl. 4-6: voltage monitoring</data>
+		<data>(182) Internal DME fault</data>
+		<data>(183) Internal DME fault</data>
+		<data>(100) Internal error</data>
+		<data>(101) Signal, tire pressure, front right</data>
+		<data>(102) Signal, tire pressure, rear right</data>
+		<data>(103) Signal, tire pressure, rear left</data>
+		<data>(184) Function, inlet VANOS</data>
+		<data>(185) Function, exhaust VANOS</data>
+		<data>(25) Ignition coil, cyl. 1</data>
+		<data>(23) Ignition coil, cyl. 2</data>
+		<data>(24) Ignition coil, cyl. 3</data>
+		<data>(50) Ignition coil, cyl. 4</data>
+		<data>(52) Ignition coil, cyl. 5</data>
+		<data>(51) Ignition coil, cyl. 6</data>
+		<data>(55) Ignition coil, cyl. 7</data>
+		<data>(26) Ignition coil, cyl. 8</data>
+		<data>(194) Electric throttle, limp home program from cruise control mode</data>
+		<data>(232) Function test, tank ventilation system</data>
+		<data>(196) Misfire, cyl.1, with cylinder cutout</data>
+		<data>(197) Misfire, cyl.2, with cylinder cutout</data>
+		<data>(198) Misfire, cyl.3, with cylinder cutout</data>
+		<data>(199) Misfire, cyl.4, with cylinder cutout</data>
+		<data>(200) Misfire, cyl.5, with cylinder cutout</data>
+		<data>(201) Misfire, cyl.6, with cylinder cutout</data>
+		<data>(202) Misfire, cyl.7, with cylinder cutout</data>
+		<data>(203) Misfire, cyl.8, with cylinder cutout</data>
+		<data>(204) Misfiring, several cylinders, with cylinder cutout</data>
+		<data>(205) Misfire, cyl.1, without cylinder cutout</data>
+		<data>(206) Misfire, cyl.2, without cylinder cutout</data>
+		<data>(207) Misfire, cyl.3, without cylinder cutout</data>
+		<data>(208) Misfire, cyl.4, without cylinder cutout</data>
+		<data>(209) Misfire, cyl.5, without cylinder cutout</data>
+		<data>(210) Misfire, cyl.6, without cylinder cutout</data>
+		<data>(211) Misfire, cyl.7, without cylinder cutout</data>
+		<data>(212) Misfire, cyl.8, without cylinder cutout</data>
+		<data>(213) Misfiring of several cylinders without cylinder cutout</data>
+		<data>(214) Oxygen sensor before cat., cyl. 1-3, period duration</data>
+		<data>(215) Oxygen sensor before cat., cyl. 4-6, period duration</data>
+		<data>(216) Oxygen sensor before cat., cyl. 1-3, jump time</data>
+		<data>(217) Oxygen sensor before cat., cyl. 4-6, jump time</data>
+		<data>(218) Oxygen sensor before cat., cyl. 1-3, signal deviation</data>
+		<data>(219) Oxygen sensor before cat., cyl. 4-6, signal deviation</data>
+		<data>(220) DME internal processor check</data>
+		<data>(149) Fault with empty tank</data>
+		<data>(15) Camshaft sensor, synchronization to crankshaft</data>
+		<data>(17) SMG shift sequence</data>
+		<data>(68) SMG safety concept</data>
+		<data>(89) Internal DME fault</data>
+		<data>(94) Inlet-VANOS adaptation</data>
+		<data>(95) Exhaust-VANOS adaptation</data>
+		<data>(96) Radiator outlet temperature implausible</data>
+		<data>(97) internal index 244</data>
+		<data>(98) internal index 245</data>
+		<data>(247) VANOS pressure accumulator valve</data>
+		<data>(0) ??</data>
+		<data>(0) ??</data>
+		<data>(0) ??</data>
+		<data>(0) ??</data>
+		<data>(0) ??</data>
+		<data>(248) Intake camshaft VANOS moving time, Cyl #1-4</data>
+		<data>(249) Exhaust camshaft VANOS moving bme. Cyl #1-4</data>
+		<data>(250) Intake camshaft VANOS sealing Cyl #1-4</data>
+		<data>(251) Exhaust camshaft VANOS sealing Cy1 #1-4</data>
+
+	</table>
+<description>Table for DTC edits. If the first method doesnt work, try the next until it is suppressed
+1st Method: 00 the value in "modifier" Column
+2nd Method: 00 the whole row of values
+3rd Method: 00 the first column (DTC Number) and 00 the value in the "modifier" column
+4th Method: replace the whole row with 00 40 40 03 02 03 02 00 01 02 03 40 00 255</description>
+</table>
+
+<table type="3D" name="DTC - Set 2" category="DTCs" storagetype="uint8" endian="little"  userlevel="1" sizey="127" sizex="14" >
+   <scaling units="Decimal" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="5" />
+   <table type="Static X Axis" name="Byte" sizex="14">
+		<data>DTC Number</data>   
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data></data>
+		<data>Modifier</data>
+		<data></data>
+   </table>
+	<table type="Static Y Axis" name="DTC" sizey="127">
+		<data>(131) DSC intervention implausible</data>
+		<data>(132) CAN timeout DSC</data>
+		<data>(133) CAN timeout, steering angle sensor</data>
+		<data>(134) CAN timeout, instrument cluster</data>
+		<data>(135) No road speed signal</data>
+		<data>(141) Tank fill level implausible</data>
+		<data>(142) System check, suction jet pump for brake boosting</data>
+		<data>(143) Activation, electronics box fan</data>
+		<data>(105) Signal, engine temperature implausible. Temperature sensor possibly tampered with or faulty or thermostat jammed.</data>
+		<data>(2) Idle speed control valve, NO winding</data>
+		<data>(29) Idle speed control valve,NC-contact winding</data>
+		<data>(155) Storing adaptation values not possible</data>
+		<data>(150) DME memory fault</data>
+		<data>(106) Signal, brake light switch</data>
+		<data>(9) Signal, knock sensor, cyl. 1-2</data>
+		<data>(70) Signal, knock sensor, cyl. 5-6</data>
+		<data>(69) Signal, knock sensor, cyl. 3-4</data>
+		<data>(71) Switch, driving dynamics</data>
+		<data>(42) Road speed signal PIN 4-22</data>
+		<data>(14) LDP-Heater</data>
+		<data>(152) internal: Communication master</data>
+		<data>(86) No CAN-bus signal to DME</data>
+		<data>(136) Function, idle speed control</data>
+		<data>(79) Signal, temperature sensor, exhaust gas</data>
+		<data>(137) Suction-jet pump</data>
+		<data>(138) Activation, differential lock</data>
+		<data>(139) nterruption, cruise-control operation</data>
+		<data>(140) Knock control deactivated/knock protection</data>
+		<data>(159) Internal DME fault: knock control</data>
+		<data>(160) Internal DME fault: knock control</data>
+		<data>(161) Internal DME fault: knock control</data>
+		<data>(162) Camshaft sensor, bank 2: synchronization to crankshaft</data>
+		<data>(76) Ambient pressure sensor (DME internal)</data>
+		<data>(163) Reset DME possibly due to overspeed</data>
+		<data>(20) Start relay</data>
+		<data>(77) Signal, temperature sensor, intake air</data>
+		<data>(78) Signal, temperature sensor, coolant</data>
+		<data>(73) Signal, mass air flow sensor, implausible</data>
+		<data>(107) Electric throttle: self-test</data>
+		<data>(58) Voltage supply, sensors 1</data>
+		<data>(59) Voltage supply, sensors 2</data>
+		<data>(48) Interface, IHKA (E46)/relay, A/C compressor (E36/7)</data>
+		<data>(41) Signal, mass air flow sensor</data>
+		<data>(57) Signal, mass air flow sensor, left</data>
+		<data>(108) Activation, oil circuit changeover valve, left</data>
+		<data>(109) Activation, oil circuit changeover valve, right</data>
+		<data>(8) Signal, camshaft sensor, outlet</data>
+		<data>(11) VANOS test</data>
+		<data>(74) Inlet VANOS, bank 2, advance valve</data>
+		<data>(75) Inlet VANOS, bank 2, retard valve</data>
+		<data>(83) Exhaust VANOS, bank 2, advance valve</data>
+		<data>(84) Exhaust VANOS, bank 2, retard valve</data>
+		<data>(172) VANOS admission pressure pump</data>
+		<data>(81) Interface, multifunction steering wheel (E46) / steering-column stalk (E36/7)</data>
+		<data>(111) Pedal travel sensor, comparison fault</data>
+		<data>(112) Pedal-position sensor, comparison fault</data>
+		<data>(113) Function, inlet VANOS, bank 2</data>
+		<data>(114) Function, exhaust VANOS, bank 2</data>
+		<data>(115) Sensor, control module temp. (DME internal), or button, tire pressure</data>
+		<data>(116) Activation, valve, Servotronic</data>
+		<data>(117) Road speed signal via CAN</data>
+		<data>(118) Electric throttle: signal, potentiometer, throttle</data>
+		<data>(119) Signal, potentiometer, servomotor</data>
+		<data>(120) Electric throttle: potentiometer, signal comparison</data>
+		<data>(121) Electric throttle: both potentiometers faulty</data>
+		<data>(19) Relay, secondary air pump</data>
+		<data>(63) Secondary air valve</data>
+		<data>(170) Secondary air quantity too low</data>
+		<data>(171) Function, secondary air injector valve</data>
+		<data>(82) Activation, exhaust flap</data>
+		<data>(173) Continuous signal term. 50, starter switch</data>
+		<data>(128) Deviation, idle speed</data>
+		<data>(129) Cat. protection function due to empty tank or lack of fuel</data>
+		<data>(222) No CAN-bus signal from supplementary control module</data>
+		<data>(223) Charge-air pressure sensor, range check</data>
+		<data>(224) plausibility loading signal</data>
+		<data>(225) Outside temperature from instrument cluster implausible</data>
+		<data>(226) Time value from instrument cluster implausible</data>
+		<data>(227) ??? Activation, battery disconnecting switch</data>
+		<data>(228) Electric throttle: limit violation</data>
+		<data>(229) Electric throttle: control deviation</data>
+		<data>(230) Electric throttle: setpoint/actual-value monitoring</data>
+		<data>(231) DME internal processor check</data>
+		<data>(195) Deviation, setpoint torque from actual torque</data>
+		<data>(233) ??? Activation, automatic starting device</data>
+		<data>(104) ??? Wrong values in fault memory</data>
+		<data>(153) internal index 87</data>
+		<data>(154) Crankcase breather</data>
+		<data>(221) System test, crankcase breather</data>
+		<data>(60) Signal, pedal travel sensor 1</data>
+		<data>(61) Signal, pedal travel sensor 2</data>
+		<data>(85) Signal, throttle-valve potentiometer</data>
+		<data>(45) Electric throttle: servomotor</data>
+		<data>(44) Signal, thermal oil level sensor</data>
+		<data>(49) internal index 95</data>
+		<data>(56) internal index 96</data>
+		<data>(62) internal index 97</data>
+		<data>(64) VANOS supplementary components</data>
+		<data>(164) ??? Atmospheric-pressure sensor</data>
+		<data>(165) internal index 100</data>
+		<data>(166) internal index 101</data>
+		<data>(167) internal index 102</data>
+		<data>(168) ??? Activation, fault lamp (Check Engine)</data>
+		<data>(169) internal index 104</data>
+		<data>(146) internal index 105</data>
+		<data>(147) ??? Function, map cooling</data>
+		<data>(148) EWS 3.3 interface DME-EWS/Interface, electronic engine immobiliser</data>
+		<data>(0) ??</data>
+		<data>(0) ??</data>
+		<data>(0) ??</data>
+		<data>(0) ??</data>
+		<data>(99) Internal DME fault</data>
+		<data>(0) ??</data>
+		<data>(0) ??</data>
+		<data>(0) ??</data>
+		<data>(252) Intake camshaft VANOS moving time. Cyl #5-8</data>
+		<data>(253) Exhaust camshaft VANOS moving bme, Cyl #5-8</data>
+		<data>(254) Intake camshaft VANOS sealing, Cyl #5-8</data>
+		<data>(255) Exhaust camshaft VANOS sealing. Cyl #5-8</data>
+		<data>(186) Ignition coil, cylinder 1</data>
+		<data>(187) Ignition coil, cylinder 2</data>
+		<data>(188) Ignition coil, cylinder 3</data>
+		<data>(189) Ignition coil, cylinder 4</data>
+		<data>(190) Ignition coil, cylinder 5</data>
+		<data>(191) Ignition coil, cylinder 6</data>
+		<data>(192) Ignition coil, cylinder 7</data>
+		<data>(193) Ignition coil, cylinder 8</data>
+
+	</table>
+<description>Table for DTC edits. If the first method doesnt work, try the next until it is suppressed
+1st Method: 00 the value in "modifier" Column
+2nd Method: 00 the whole row of values
+3rd Method: 00 the first column (DTC Number) and 00 the value in the "modifier" column
+4th Method: replace the whole row with 00 40 40 03 02 03 02 00 01 02 03 40 00 255</description>
+</table>
+
+
+ </rom>
+  <rom base="BMWMSS5XBASE">
+    <!-- In this ROM specific section define only the attributes missing or that need
+     to be changed compared to the common table data and axis attributes in the BASE.
+     This will typically be the storageaddress and sometimes the size entries. -->
+    <romid>
+      <internalidaddress>7FC0</internalidaddress>
+      <internalidstring>1601</internalidstring>
+      <xmlid>1601</xmlid>
+      <ecuid>7831762</ecuid>
+      <year>2004</year>
+      <market>USDM</market>
+      <make>BMW</make>
+      <model>M5</model>
+      <submodel>Partial E39 5WK9254 1601</submodel>
+      <transmission>MT/AT</transmission>
+      <memmodel>SAK-C167CR-LM</memmodel>
+      <filesize>32kb</filesize>
+    </romid>
+	
+	<table name="EWS Delete" storageaddress="0x59" />
+		
+	<table name="DTC - Set 1" storageaddress="0x38B4" />
+	<table name="DTC - Set 2" storageaddress="0x7814" />
+
+	<table name="Fuel Injection - WOT Enrichment" storageaddress="0xB29">
+	<table type="X Axis" storageaddress="0xB00" />
+	<table type="Y Axis" storageaddress="0xB24" />
+	</table>
+	
+	<table name="Fuel Injection - Scalar" storageaddress="0x8CA">
+	<table type="X Axis" storageaddress="0x88E" />
+	<table type="Y Axis" storageaddress="0x8B2" />
+	</table>
+	
+	<table name="Fuel Injection - Dead Time" storageaddress="0x134">
+	<table type="X Axis" storageaddress="0x12A" />
+	</table>
+	
+	<table name="Fuel Injection - Minimum IPW" storageaddress="0x5F" /> 
+
+	<table name="Fuel Injection - Maximum IPW" storageaddress="0x61" /> 
+	
+	<table name="Ignition Timing - Base" storageaddress="0x55FA">
+	<table type="X Axis" storageaddress="0x55BE" />
+	<table type="Y Axis" storageaddress="0x55E2" />
+	</table>
+	
+	<table name="MAF Scalar" storageaddress="0x6142">
+	<table type="X Axis" storageaddress="0x6100" />
+	</table>
+	
+	
+	<table name="Engine Rev Limit by Gear" storageaddress="0x3C2">
+	<table type="X Axis" storageaddress="0x3B2" />
+	</table>	
+
+	<table name="Vehicle Speed Limit by Gear" storageaddress="0x6F54">
+	<table type="X Axis" storageaddress="0x6F44" />
+	</table>	
+	
+   </rom>
+  
+</roms>
