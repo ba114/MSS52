@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE roms [
 
 <!ELEMENT roms ( rom+ ) >
@@ -86,6 +86,29 @@ v0.0.1
 You will need to supress DTCs 66,130,148 </description>
 </table>
 
+<table type="3D" name="CH - Intake VANOS" category="Catalyst Heating" storagetype="uint8" endian="little" sizex="16" sizey="16" userlevel="1" >
+   <scaling units="%" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling %" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.003052" to_byte="x/0.003052" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_EVAN1_SOLL_KATH) Intake VANOS position whilst catalyst heating is active</description>
+</table>
+
+<table type="3D" name="CH - Exhaust VANOS" category="Catalyst Heating" storagetype="int8" endian="little" sizex="16" sizey="16" userlevel="1" >
+   <scaling units="%" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling %" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.003052" to_byte="x/0.003052" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_AVAN1_SOLL_KATH) Intake VANOS position whilst catalyst heating is active</description>
+</table>
+
+
 <table type="3D" name="Fuel Injection - WOT Enrichment" category="Fuel" storagetype="uint8" endian="little" sizex="18" sizey="3" userlevel="1" >
    <scaling units="%" expression="x*0.083333" to_byte="x/0.083333" format="0.00" fineincrement="0.01" coarseincrement="1" />
    <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
@@ -143,6 +166,29 @@ You will need to supress DTCs 66,130,148 </description>
    </table>
    <description>(KF_TZ_GRUND) This is the main ignition timing advance map</description>
 </table> 
+
+
+<table type="3D" name="Intake VANOS" category="VANOS" storagetype="uint8" endian="little" sizex="16" sizey="16" userlevel="1" >
+   <scaling units="%" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling %" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.003052" to_byte="x/0.003052" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_EVAN1_SOLL_KATH) Intake VANOS position whilst catalyst heating is active</description>
+</table>
+
+<table type="3D" name="Exhaust VANOS" category="VANOS" storagetype="int8" endian="little" sizex="16" sizey="16" userlevel="1" >
+   <scaling units="%" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling %" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.003052" to_byte="x/0.003052" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_AVAN1_SOLL_KATH) Intake VANOS position whilst catalyst heating is active</description>
+</table>
  
 <table type="2D" name="Engine Rev Limit by Gear" category="Limiters" storagetype="int16" endian="big" sizey="8" userlevel="1" >
    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="50" />
@@ -159,17 +205,44 @@ You will need to supress DTCs 66,130,148 </description>
    </table>
    <description>(KL_V_MAX_GANG) Vehicle Speed Limit by Gear</description>
 </table>
+
+<table type="2D" name="Engine Rev Limit - Dyno mode (VSS error)" category="Limiters" storagetype="uint16" endian="big" sizey="1" userlevel="1" >
+   <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   	<table type="Static Y Axis" name="RPM" sizey="1">
+		<data>RPM Limit</data>
+   </table>
+   <description>(K_N_MAX_VFEHLER) The limits the engine RPM in case of VSS signal missing, or when front wheels aren't moving i.e. dyno mode</description>
+</table>
  
- <table type="2D" name="MAF Scalar" category="Scalars" storagetype="uint16" endian="big" sizey="33" userlevel="1" >
-   <scaling units="kg/hr" expression="x*0.15625" to_byte="x/0.15625" format="0.00" fineincrement="1" coarseincrement="10" />
+ <table type="2D" name="MAF Scalar" category="Scalars" storagetype="int16" endian="big" sizey="33" userlevel="1" >
+   <scaling units="kg/hr" expression="x*0.25" to_byte="x/0.25" format="0.00" fineincrement="1" coarseincrement="10" />
    <table type="X Axis" name="Volts" storagetype="uint16" endian="big" >
     <scaling units="Volts" expression="x*0.15625" to_byte="x/0.15625" format="0.00" fineincrement="0.1" coarseincrement="1" />
    </table>
    <description>This is the scaling for the MAF sensor</description>
 </table>
  
- 
- 
+ <table type="3D" name="Throttle Mapping" category="Scalars" storagetype="uint16" endian="big" sizex="14" sizey="23" userlevel="1" >
+   <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="0.00" fineincrement=".01" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="#" fineincrement="10" coarseincrement="50" />
+   </table>
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.001" to_byte="x/0.001" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_EGAS_WDK) This is the scaling for the electric throttle mapping</description>
+</table> 
+
+  <table type="3D" name="Calculated Load" category="Alpha-N" storagetype="uint16" endian="big" sizex="18" sizey="12" userlevel="1" >
+   <scaling units="mg/stk" expression="x" to_byte="x" format="0.00" fineincrement="1" coarseincrement="10" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="10" coarseincrement="50" />
+   </table>
+   <table type="Y Axis" name="TPS" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.003052" to_byte="x/0.003052" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_RF_N_AQ_REL) This table calculates load based on RPM and TPS position</description>
+</table> 
  
  
  
@@ -495,7 +568,7 @@ You will need to supress DTCs 66,130,148 </description>
       <internalidstring>1601</internalidstring>
       <xmlid>1601</xmlid>
       <ecuid>7831762</ecuid>
-      <year>1998-2003</year>
+      <year>2004</year>
       <market>USDM</market>
       <make>BMW</make>
       <model>M5</model>
@@ -509,7 +582,17 @@ You will need to supress DTCs 66,130,148 </description>
 		
 	<table name="DTC - Set 1" storageaddress="0x38B4" />
 	<table name="DTC - Set 2" storageaddress="0x7814" />
-
+	
+	<table name="CH - Intake VANOS" storageaddress="0x1232">
+	<table type="X Axis" storageaddress="0x11F2" />
+	<table type="Y Axis" storageaddress="0x1212" />
+	</table>
+	
+	<table name="CH - Exhaust VANOS" storageaddress="0x1556">
+	<table type="X Axis" storageaddress="0x1516" />
+	<table type="Y Axis" storageaddress="0x1536" />
+	</table>
+	
 	<table name="Fuel Injection - WOT Enrichment" storageaddress="0xB29">
 	<table type="X Axis" storageaddress="0xB00" />
 	<table type="Y Axis" storageaddress="0xB24" />
@@ -528,6 +611,16 @@ You will need to supress DTCs 66,130,148 </description>
 
 	<table name="Fuel Injection - Maximum IPW" storageaddress="0x61" /> 
 	
+	<table name="Intake VANOS" storageaddress="0x10F0">
+	<table type="X Axis" storageaddress="0x10B0" />
+	<table type="Y Axis" storageaddress="0x10D0" />
+	</table>
+	
+	<table name="Exhaust VANOS" storageaddress="0x1414">
+	<table type="X Axis" storageaddress="0x13D4" />
+	<table type="Y Axis" storageaddress="0x13F4" />
+	</table>	
+	
 	<table name="Ignition Timing - Base" storageaddress="0x55FA">
 	<table type="X Axis" storageaddress="0x55BE" />
 	<table type="Y Axis" storageaddress="0x55E2" />
@@ -535,6 +628,11 @@ You will need to supress DTCs 66,130,148 </description>
 	
 	<table name="MAF Scalar" storageaddress="0x6142">
 	<table type="X Axis" storageaddress="0x6100" />
+	</table>
+	
+	<table name="Throttle Mapping" storageaddress="0x6392">
+	<table type="X Axis" storageaddress="0x6348" />
+	<table type="Y Axis" storageaddress="0x6364" />
 	</table>
 	
 	
@@ -545,6 +643,14 @@ You will need to supress DTCs 66,130,148 </description>
 	<table name="Vehicle Speed Limit by Gear" storageaddress="0x6F54">
 	<table type="X Axis" storageaddress="0x6F44" />
 	</table>	
+	
+	<table name="Engine Rev Limit - Dyno mode (VSS error)" storageaddress="0x70" />
+	
+	<table name="Calculated Load" storageaddress="0x17B2">
+	<table type="X Axis" storageaddress="0x1776" />
+	<table type="Y Axis" storageaddress="0x179A" />
+	</table>	
+	
 	
    </rom>
   
