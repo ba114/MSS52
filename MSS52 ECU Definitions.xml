@@ -86,6 +86,16 @@ v0.0.1
 You will need to supress DTCs 66,130,148 </description>
 </table>
 
+<table type="Switch" name="Sport Mode Memory" category="Config Switches" sizey="2" userlevel="5">
+	<state name="Sport mode enabled with DSC off" data="00" />
+	<state name="Sport mode always on" data="01" />
+	<state name="Comfort mode always on" data="02" />
+	<state name="On via button press (Default)" data="03" />
+	<state name="Memory - store last used option" data="04" />
+	<description>Use this switch to change the behaviour of sport mode in the DME</description>
+</table>
+
+
 <table type="3D" name="CH - Intake VANOS" category="Catalyst Heating" storagetype="uint8" endian="little" sizex="16" sizey="16" userlevel="1" >
    <scaling units="%" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
    <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
@@ -105,17 +115,80 @@ You will need to supress DTCs 66,130,148 </description>
    <table type="Y Axis" name="Relative Filling %" storagetype="uint16" endian="big">
     <scaling units="%" expression="x*0.003052" to_byte="x/0.003052" format="0.00" fineincrement="1" coaeincrement="10" />
    </table>
-   <description>(KF_AVAN1_SOLL_KATH) Intake VANOS position whilst catalyst heating is active</description>
+   <description>(KF_AVAN1_SOLL_KATH) Exhaust VANOS position whilst catalyst heating is active</description>
 </table>
 
+<table type="2D" name="(STFT) Minimum Integrator" category="STFT" storagetype="int16" endian="little"  userlevel="1" sizey="1">
+	<scaling units="%" expression="(x*0.003052)-100" to_byte="(x+100)/0.003052" format="0.0" fineincrement=".1" coarseincrement="1" />
+	<table type="Static Y Axis" name="Minimum STFT" sizey="1">
+		<data>Short Term Fuel Trim (OBD2) - Minimum Limit</data>
+	</table>
+	<description>(K_LA_FMIN) This table determines the % of additional fuel that can be removed from to the base fueling to achieve stoich (14.7:1) based on O2 feedback</description>
+</table> 
+
+<table type="2D" name="(STFT) Maximum Integrator" category="STFT" storagetype="uint16" endian="little"  userlevel="1" sizey="1">
+	<scaling units="%" expression="(x*0.003052)-100" to_byte="(x+100)/0.003052" format="0.0" fineincrement=".1" coarseincrement="1" />
+	<table type="Static Y Axis" name="Maximum STFT" sizey="1">
+		<data>Short Term Fuel Trim (OBD2) - Maximum Limit</data>
+	</table>
+	<description>(K_LA_FMAX) This table determines the % of additional fuel that can be added to the base fueling to achieve stoich (14.7:1) based on O2 feedback</description>
+</table>
+
+<table type="2D" name="(LTFT) Minimum Integrator" category="LTFT" storagetype="int16" endian="little"  userlevel="1" sizey="1">
+	<scaling units="%" expression="(x*0.003052)-100" to_byte="(x+100)/0.003052" format="0.0" fineincrement=".1" coarseincrement="1" />
+	<table type="Static Y Axis" name="Minimum LTFT" sizey="1">
+		<data>Long Term Fuel Trim (OBD2) - Minimum Limit</data>
+	</table>
+	<description>(K_LAA_FMIN) This table determines the % of additional fuel that can be removed from to the base fueling</description>
+</table> 
+
+<table type="2D" name="(LTFT) Maximum Integrator" category="LTFT" storagetype="uint16" endian="little"  userlevel="1" sizey="1">
+	<scaling units="%" expression="(x*0.003052)-100" to_byte="(x+100)/0.003052" format="0.0" fineincrement=".1" coarseincrement="1" />
+	<table type="Static Y Axis" name="Maximum LTFT" sizey="1">
+		<data>Long Term Fuel Trim (OBD2) - Maximum Limit</data>
+	</table>
+	<description>(K_LAA_FMAX) This table determines the learned % of additional fuel that can be added to the base fueling</description>
+</table>
+
+<table type="2D" name="(LTFT) Minimum ECT" category="LTFT" storagetype="uint8" endian="little"  userlevel="1" sizey="1">
+   <scaling units="deg" expression="x-48" to_byte="x+48" format="0" fineincrement=".1" coarseincrement="1" />
+      <table type="Static Y Axis" name="ECT" sizey="1">
+    <data>Coolant Temp</data>
+   </table>
+<description> (K_LAA_TMOT_MIN) LTFT fueling in disabled below this temperature</description>
+</table> 
+
+<table type="2D" name="(LTFT) Maximum ECT" category="LTFT" storagetype="uint8" endian="little"  userlevel="1" sizey="1">
+   <scaling units="deg" expression="x-48" to_byte="x+48" format="0" fineincrement=".1" coarseincrement="1" />
+      <table type="Static Y Axis" name="ECT" sizey="1">
+    <data>Coolant Temp</data>
+   </table>
+<description> (K_LAA_TMOT_MAX) LTFT fueling is disabled above this temperature</description>
+</table> 
+
+<table type="2D" name="(Idle LTFT) Minimum Additive" category="LTFT" storagetype="int16" endian="little"  userlevel="1" sizey="1">
+   <scaling units="milliseconds" expression="x*0.001" to_byte="x.0.001" format="0.000" fineincrement=".1" coarseincrement="1" />
+      <table type="Static Y Axis" name="Minimum IPW" sizey="1">
+    <data>Idle fuel additive</data>
+   </table>
+<description> (K_LAA_OFFSET_MIN) Additional 'Additive' that is only used near 'idle': Effect = Learned milliseconds removed from current injector pulsewidth</description>
+</table> 
+
+<table type="2D" name="(Idle LTFT) Maximum Additive" category="LTFT" storagetype="uint16" endian="little"  userlevel="1" sizey="1">
+   <scaling units="milliseconds" expression="x*0.001" to_byte="x/0.001" format="0.000" fineincrement=".1" coarseincrement="1" />
+         <table type="Static Y Axis" name="Maximum IPW" sizey="1">
+    <data>Idle fuel additive</data>
+   </table>
+<description> (K_LAA_OFFSET_MAX) Additional 'Additive' that is only used near 'idle': Effect = Learned milliseconds added to current injector pulsewidth</description>
+</table>
 
 <table type="3D" name="Fuel Injection - WOT Enrichment" category="Fuel" storagetype="uint8" endian="little" sizex="18" sizey="3" userlevel="1" >
    <scaling units="%" expression="x*0.083333" to_byte="x/0.083333" format="0.00" fineincrement="0.01" coarseincrement="1" />
    <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
     <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
    </table>
-   <table type="Y Axis" name="TPS %" storagetype="uint16" endian="big">
-    <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="0" fineincrement="1" coaeincrement="10" />
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="0" fineincrement="1" coarseincrement="10" />
    </table>
    <description>(KF_TI_N_RF_VL) Enrichment % for fuel under full throttle conditions</description>
 </table>
@@ -125,10 +198,11 @@ You will need to supress DTCs 66,130,148 </description>
    <table type="X Axis" name="RPM" storagetype="uint16" endian="big" logparam="E2" >
     <scaling units="RPM" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="10" />
    </table>
-   <table type="Y Axis" name="Load" storagetype="uint16" endian="big"  logparam="P8" >
-    <scaling units="mg/stk" expression="x" to_byte="x" format="#" fineincrement="50" coaeincrement="100" />
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big"  logparam="P8" >
+    <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="#" fineincrement="1" coaeincrement="10" />
    </table>
-   <description>(KF_TI_N_RF) This map acts as a scalar to the stock fuel map. Values in this table are multiplied to Fuel Injection - Base</description>
+   <description>(KF_TI_N_RF) This map acts as a scalar to the stock fuel map. Values in this table are multiplied to the calculated Injector Pulse Width.
+  Increase these values to lower your STFT closer to 0, lower these values to increase STFT closer to 0.</description>
 </table>
   
 <table type="2D" name="Fuel Injection - Dead Time" category="Fuel" storagetype="uint16" endian="big" sizey="5" userlevel="1" >
@@ -156,16 +230,27 @@ You will need to supress DTCs 66,130,148 </description>
 	<description>(K_TI_MAX) Use this table to adjust the Maximum IPW limit in the DME. Needed for larger injectors</description>
 </table>
 
-<table type="3D" name="Ignition Timing - Base" category="Timing" storagetype="uint16" endian="big" sizex="18" sizey="12" userlevel="1" >
+<table type="3D" name="Ignition Timing - Base" category="Timing" storagetype="int16" endian="big" sizex="18" sizey="12" userlevel="1" >
    <scaling units="deg" expression="x*0.1" to_byte="x/0.1" format="0.00" fineincrement=".01" coarseincrement="1" />
    <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
     <scaling units="RPM" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="10" />
    </table>
-   <table type="Y Axis" name="Load" storagetype="uint16" endian="big">
-    <scaling units="mg/stk" expression="x" to_byte="x" format="#" fineincrement="50" coaeincrement="100" />
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="#" fineincrement="1" coaeincrement="10" />
    </table>
    <description>(KF_TZ_GRUND) This is the main ignition timing advance map</description>
 </table> 
+
+<table type="3D" name="Ignition Timing - Idle - Base" category="Timing" storagetype="int16" endian="big"  userlevel="1" sizex="6" sizey="2">
+	<scaling units="deg" expression="x*0.1" to_byte="x/0.1" format="0.0" fineincrement="0.5" coarseincrement="1" />
+	<table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+		<scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="50" coarseincrement="100" />
+	</table>
+	<table type="Y Axis" name="Relative filling" storagetype="uint16" endian="big" logparam="P8" >
+		<scaling units="%" expression="x*0.1" to_byte="x/0.1" format="#" fineincrement="1" coarseincrement="10" />
+	</table>
+	<description>This ignition timing advance map is used during engine idle mode.</description>
+</table>
 
 
 <table type="3D" name="Intake VANOS" category="VANOS" storagetype="uint8" endian="little" sizex="16" sizey="16" userlevel="1" >
@@ -176,7 +261,7 @@ You will need to supress DTCs 66,130,148 </description>
    <table type="Y Axis" name="Relative Filling %" storagetype="uint16" endian="big">
     <scaling units="%" expression="x*0.003052" to_byte="x/0.003052" format="0.00" fineincrement="1" coaeincrement="10" />
    </table>
-   <description>(KF_EVAN1_SOLL_KATH) Intake VANOS position whilst catalyst heating is active</description>
+   <description>(KF_EVAN1_SOLL) Intake VANOS position</description>
 </table>
 
 <table type="3D" name="Exhaust VANOS" category="VANOS" storagetype="int8" endian="little" sizex="16" sizey="16" userlevel="1" >
@@ -187,22 +272,36 @@ You will need to supress DTCs 66,130,148 </description>
    <table type="Y Axis" name="Relative Filling %" storagetype="uint16" endian="big">
     <scaling units="%" expression="x*0.003052" to_byte="x/0.003052" format="0.00" fineincrement="1" coaeincrement="10" />
    </table>
-   <description>(KF_AVAN1_SOLL_KATH) Intake VANOS position whilst catalyst heating is active</description>
+   <description>(KF_AVAN1_SOLL) Exhaust VANOS position</description>
 </table>
  
-<table type="2D" name="Engine Rev Limit by Gear" category="Limiters" storagetype="int16" endian="big" sizey="8" userlevel="1" >
+<table type="2D" name="Engine Rev Limit by Gear" category="Limiters" storagetype="int16" endian="big" sizex="8" userlevel="1" >
    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="50" />
-   <table type="X Axis" name="Gear" storagetype="uint16" endian="big" >
-    <scaling units="Gear" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
-   </table>
+   <table type="Static X Axis" name="Gear" sizex="8">
+		<data>Neutral</data>
+		<data>1</data>
+		<data>2</data>
+		<data>3</data>
+		<data>4</data>
+		<data>5</data>
+		<data>6</data>
+		<data>Reverse</data>
+	</table>
    <description>(KL_N_MAX) Engine rev limit by gear</description>
 </table>
 
-<table type="2D" name="Vehicle Speed Limit by Gear" category="Limiters" storagetype="uint16" endian="big" sizey="8" userlevel="1" >
+<table type="2D" name="Vehicle Speed Limit by Gear" category="Limiters" storagetype="uint16" endian="big" sizex="8" userlevel="1" >
    <scaling units="km/h" expression="x*0.0625" to_byte="x/0.0625" format="0" fineincrement="1" coarseincrement="10" />
-   <table type="X Axis" name="Gear" storagetype="uint16" endian="big" >
-    <scaling units="Gear" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
-   </table>
+   <table type="Static X Axis" name="Gear" sizex="8">
+		<data>Neutral</data>
+		<data>1</data>
+		<data>2</data>
+		<data>3</data>
+		<data>4</data>
+		<data>5</data>
+		<data>6</data>
+		<data>Reverse</data>
+	</table>
    <description>(KL_V_MAX_GANG) Vehicle Speed Limit by Gear</description>
 </table>
 
@@ -222,7 +321,7 @@ You will need to supress DTCs 66,130,148 </description>
    <description>This is the scaling for the MAF sensor</description>
 </table>
  
- <table type="3D" name="Throttle Mapping" category="Scalars" storagetype="uint16" endian="big" sizex="14" sizey="23" userlevel="1" >
+ <table type="3D" name="Throttle Mapping" category="Throttle" storagetype="uint16" endian="big" sizex="14" sizey="23" userlevel="1" >
    <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="0.00" fineincrement=".01" coarseincrement="1" />
    <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
     <scaling units="RPM" expression="x" to_byte="x" format="#" fineincrement="10" coarseincrement="50" />
@@ -233,19 +332,144 @@ You will need to supress DTCs 66,130,148 </description>
    <description>(KF_EGAS_WDK) This is the scaling for the electric throttle mapping</description>
 </table> 
 
+ <table type="2D" name="Throttle Sensitivity - Limp Mode" category="Throttle" storagetype="uint16" endian="big" sizex="1" sizey="10" userlevel="1" >
+   <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="0.00" fineincrement=".01" coarseincrement="1" />
+   <table type="X Axis" name="Pedal Position" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="#" fineincrement="10" coarseincrement="50" />
+   </table>
+   <description>This is the relationship between Pedal % and Throttle opening when in Limp mode</description>
+</table> 
+
+ <table type="2D" name="Throttle Sensitivity - Comfort Mode" category="Throttle" storagetype="uint16" endian="big" sizex="1" sizey="10" userlevel="1" >
+   <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="0.00" fineincrement=".01" coarseincrement="1" />
+   <table type="X Axis" name="Pedal Position" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="#" fineincrement="10" coarseincrement="50" />
+   </table>
+   <description>This is the relationship between Pedal % and Throttle opening when in Comfort mode</description>
+</table> 
+
+ <table type="2D" name="Throttle Sensitivity - Sport Mode" category="Throttle" storagetype="uint16" endian="big" sizex="1" sizey="10" userlevel="1" >
+   <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="0.00" fineincrement=".01" coarseincrement="1" />
+   <table type="X Axis" name="Pedal Position" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.1" to_byte="x/0.1" format="#" fineincrement="10" coarseincrement="50" />
+   </table>
+   <description>This is the relationship between Pedal % and Throttle opening when in Sport mode</description>
+</table> 
+
   <table type="3D" name="Calculated Load" category="Alpha-N" storagetype="uint16" endian="big" sizex="18" sizey="12" userlevel="1" >
    <scaling units="mg/stk" expression="x" to_byte="x" format="0.00" fineincrement="1" coarseincrement="10" />
    <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
     <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="10" coarseincrement="50" />
    </table>
    <table type="Y Axis" name="TPS" storagetype="uint16" endian="big">
-    <scaling units="%" expression="x*0.003052" to_byte="x/0.003052" format="0.00" fineincrement="1" coaeincrement="10" />
+    <scaling units="%" expression="x*(100/32768)" to_byte="x/(100/32768)" format="0.00" fineincrement="1" coaeincrement="10" />
    </table>
    <description>(KF_RF_N_AQ_REL) This table calculates load based on RPM and TPS position</description>
 </table> 
  
+ <table type="2D" name="MAF Plausibility Check - Low RPM Threshold" category="Forced Induction" storagetype="uint16" endian="little" sizey="1" userlevel="1">
+	<scaling units="RPM" expression="x" to_byte="x"  format="0" fineincrement="50" coarseincrement="500" />
+	<table type="Static Y Axis" name="if Engine Speed is less than this value, MAF Plausibility Check will be ignored" sizey="1">
+	<data>Low RPM Threshold</data>
+	</table>
+	<description>(K_HFM_DIAG_N_MIN) The ECU runs through a section of code to check for TPS and/or MAF plausibility to detect sensor errors that aren't due to simple disconnects. The ECU has a rough Alpha N map that knows how RPM, TPS, and MAF should relate to one another. If sensor readings fall outside of this range, it will throw a code for plausibility. For example, at 25% Throttle at 3400RPM, you can have a situation where the turbo has spooled up and is generating a lot of airflow. This would never happen in an NA engine so the ECU sees this extra air read by the MAF sensor and thinks something is wrong. But it only checks for this in a narrow window of RPM between 532 and 3416 and TPS between 13% and 30% in stock form. We can change these thresholds to fool the ECU into never running this code by changing the RPM thresholds.</description>
+</table> 
+
+<table type="2D" name="MAF Plausibility Check - High RPM Threshold" category="Forced Induction" storagetype="uint16" endian="little" sizey="1" userlevel="1">
+	<scaling units="RPM" expression="x" to_byte="x"  format="0" fineincrement="50" coarseincrement="500" />
+	<table type="Static Y Axis" name="if Engine Speed is more than this value, MAF Plausibility Check will be ignored" sizey="1">
+		<data>High RPM Threshold</data>
+	</table>
+	<description>(K_HFM_DIAG_N_MAX) The ECU runs through a section of code to check for TPS and/or MAF plausibility to detect sensor errors that aren't due to simple disconnects. The ECU has a rough Alpha N map that knows how RPM, TPS, and MAF should relate to one another. If sensor readings fall outside of this range, it will throw a code for plausibility. For example, at 25% Throttle at 3400RPM, you can have a situation where the turbo has spooled up and is generating a lot of airflow. This would never happen in an NA engine so the ECU sees this extra air read by the MAF sensor and thinks something is wrong. But it only checks for this in a narrow window of RPM between 532 and 3416 and TPS between 13% and 30% in stock form. We can change these thresholds to fool the ECU into never running this code by changing the RPM thresholds.</description>
+</table> 
  
+ <table type="3D" name="Knock Detection_KNOCK FACTOR; CYL 1" category="Knock" storagetype="uint16" endian="big" sizex="16" sizey="3" userlevel="1" >
+   <scaling units="%" expression="x*(1/1024)" to_byte="x/(1/1024)" format="0.00" fineincrement="0.1" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.001" to_byte="x/0.001" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_KD_KFACT_1) The amount of noise the DME will accept before determining knock</description>
+</table>
  
+  <table type="3D" name="Knock Detection_KNOCK FACTOR; CYL 2" category="Knock" storagetype="uint16" endian="big" sizex="16" sizey="3" userlevel="1" >
+   <scaling units="%" expression="x*(1/1024)" to_byte="x/(1/1024)" format="0.00" fineincrement="0.1" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.001" to_byte="x/0.001" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_KD_KFACT_2) The amount of noise the DME will accept before determining knock</description>
+</table>
+
+ <table type="3D" name="Knock Detection_KNOCK FACTOR; CYL 3" category="Knock" storagetype="uint16" endian="big" sizex="16" sizey="3" userlevel="1" >
+   <scaling units="%" expression="x*(1/1024)" to_byte="x/(1/1024)" format="0.00" fineincrement="0.1" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.001" to_byte="x/0.001" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_KD_KFACT_3) The amount of noise the DME will accept before determining knock</description>
+</table>
+
+ <table type="3D" name="Knock Detection_KNOCK FACTOR; CYL 4" category="Knock" storagetype="uint16" endian="big" sizex="16" sizey="3" userlevel="1" >
+   <scaling units="%" expression="x*(1/1024)" to_byte="x/(1/1024)" format="0.00" fineincrement="0.1" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.001" to_byte="x/0.001" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_KD_KFACT_4) The amount of noise the DME will accept before determining knock</description>
+</table>
+
+ <table type="3D" name="Knock Detection_KNOCK FACTOR; CYL 5" category="Knock" storagetype="uint16" endian="big" sizex="16" sizey="3" userlevel="1" >
+   <scaling units="%" expression="x*(1/1024)" to_byte="x/(1/1024)" format="0.00" fineincrement="0.1" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.001" to_byte="x/0.001" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_KD_KFACT_5) The amount of noise the DME will accept before determining knock</description>
+</table>
+
+ <table type="3D" name="Knock Detection_KNOCK FACTOR; CYL 6" category="Knock" storagetype="uint16" endian="big" sizex="16" sizey="3" userlevel="1" >
+   <scaling units="%" expression="x*(1/1024)" to_byte="x/(1/1024)" format="0.00" fineincrement="0.1" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.001" to_byte="x/0.001" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_KD_KFACT_6) The amount of noise the DME will accept before determining knock</description>
+</table>
+
+ <table type="3D" name="Knock Detection_KNOCK FACTOR; CYL 7" category="Knock" storagetype="uint16" endian="big" sizex="16" sizey="3" userlevel="1" >
+   <scaling units="%" expression="x*(1/1024)" to_byte="x/(1/1024)" format="0.00" fineincrement="0.1" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.001" to_byte="x/0.001" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_KD_KFACT_7) The amount of noise the DME will accept before determining knock</description>
+</table>
+
+ <table type="3D" name="Knock Detection_KNOCK FACTOR; CYL 8" category="Knock" storagetype="uint16" endian="big" sizex="16" sizey="3" userlevel="1" >
+   <scaling units="%" expression="x*(1/1024)" to_byte="x/(1/1024)" format="0.00" fineincrement="0.1" coarseincrement="1" />
+   <table type="X Axis" name="RPM" storagetype="uint16" endian="big">
+    <scaling units="RPM" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="10" />
+   </table>
+   <table type="Y Axis" name="Relative Filling" storagetype="uint16" endian="big">
+    <scaling units="%" expression="x*0.001" to_byte="x/0.001" format="0.00" fineincrement="1" coaeincrement="10" />
+   </table>
+   <description>(KF_KD_KFACT_8) The amount of noise the DME will accept before determining knock</description>
+</table>
  
 <table type="3D" name="DTC - Set 1" category="DTCs" storagetype="uint8" endian="little"  userlevel="1" sizey="127" sizex="14" >
    <scaling units="Decimal" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="5" />
@@ -579,6 +803,7 @@ You will need to supress DTCs 66,130,148 </description>
     </romid>
 	
 	<table name="EWS Delete" storageaddress="0x59" />
+	<table name="Sport Mode Memory" storageaddress="0x4026" />
 		
 	<table name="DTC - Set 1" storageaddress="0x38B4" />
 	<table name="DTC - Set 2" storageaddress="0x7814" />
@@ -592,6 +817,23 @@ You will need to supress DTCs 66,130,148 </description>
 	<table type="X Axis" storageaddress="0x1516" />
 	<table type="Y Axis" storageaddress="0x1536" />
 	</table>
+	
+	<table name="(STFT) Minimum Integrator" storageaddress="0x3129" />
+
+	<table name="(STFT) Maximum Integrator" storageaddress="0x3127" />
+	
+	<table name="(LTFT) Minimum Integrator" storageaddress="0x3135" />
+
+	<table name="(LTFT) Maximum Integrator" storageaddress="0x3133" />
+	
+	<table name="(LTFT) Minimum ECT" storageaddress="0x3130" />
+
+	<table name="(LTFT) Maximum ECT" storageaddress="0x312F" />
+	
+	<table name="(Idle LTFT) Minimum Additive" storageaddress="0x3147" />
+
+	<table name="(Idle LTFT) Maximum Additive" storageaddress="0x3145" />
+
 	
 	<table name="Fuel Injection - WOT Enrichment" storageaddress="0xB29">
 	<table type="X Axis" storageaddress="0xB00" />
@@ -619,11 +861,17 @@ You will need to supress DTCs 66,130,148 </description>
 	<table name="Exhaust VANOS" storageaddress="0x1414">
 	<table type="X Axis" storageaddress="0x13D4" />
 	<table type="Y Axis" storageaddress="0x13F4" />
-	</table>	
+	</table>
+	
 	
 	<table name="Ignition Timing - Base" storageaddress="0x55FA">
 	<table type="X Axis" storageaddress="0x55BE" />
 	<table type="Y Axis" storageaddress="0x55E2" />
+	</table>
+	
+	<table name="Ignition Timing - Idle - Base" storageaddress="0x55A4">
+	<table type="X Axis" storageaddress="0x5594" />
+	<table type="Y Axis" storageaddress="0x55A0" />
 	</table>
 	
 	<table name="MAF Scalar" storageaddress="0x6142">
@@ -635,13 +883,22 @@ You will need to supress DTCs 66,130,148 </description>
 	<table type="Y Axis" storageaddress="0x6364" />
 	</table>
 	
+	<table name="Throttle Sensitivity - Limp Mode" storageaddress="0x4162">
+	<table type="X Axis" storageaddress="0x414E" />
+	</table>
+	
+	<table name="Throttle Sensitivity - Comfort Mode" storageaddress="0x41B6">
+	<table type="X Axis" storageaddress="0x41A2" />
+	</table>
+	
+	<table name="Throttle Sensitivity - Sport Mode" storageaddress="0x418C">
+	<table type="X Axis" storageaddress="0x4178" />
+	</table>
 	
 	<table name="Engine Rev Limit by Gear" storageaddress="0x3C2">
-	<table type="X Axis" storageaddress="0x3B2" />
 	</table>	
 
 	<table name="Vehicle Speed Limit by Gear" storageaddress="0x6F54">
-	<table type="X Axis" storageaddress="0x6F44" />
 	</table>	
 	
 	<table name="Engine Rev Limit - Dyno mode (VSS error)" storageaddress="0x70" />
@@ -651,6 +908,48 @@ You will need to supress DTCs 66,130,148 </description>
 	<table type="Y Axis" storageaddress="0x179A" />
 	</table>	
 	
+	<table name="MAF Plausibility Check - Low RPM Threshold" storageaddress="0x60D3" />
+	<table name="MAF Plausibility Check - High RPM Threshold" storageaddress="0x60D5" />
+	
+	<table name="Knock Detection_KNOCK FACTOR; CYL 1" storageaddress="0x4D04">
+	<table type="X Axis" storageaddress="0x4CDE" />
+	<table type="Y Axis" storageaddress="0x4CFE" />
+	</table>
+	
+	<table name="Knock Detection_KNOCK FACTOR; CYL 2" storageaddress="0x4D8C">
+	<table type="X Axis" storageaddress="0x4D66" />
+	<table type="Y Axis" storageaddress="0x4D86" />
+	</table>
+	
+	<table name="Knock Detection_KNOCK FACTOR; CYL 3" storageaddress="0x4E14">
+	<table type="X Axis" storageaddress="0x4DEE" />
+	<table type="Y Axis" storageaddress="0x4E0E" />
+	</table>
+	
+	<table name="Knock Detection_KNOCK FACTOR; CYL 4" storageaddress="0x4E9C">
+	<table type="X Axis" storageaddress="0x4E76" />
+	<table type="Y Axis" storageaddress="0x4E96" />
+	</table>
+	
+	<table name="Knock Detection_KNOCK FACTOR; CYL 5" storageaddress="0x4F24">
+	<table type="X Axis" storageaddress="0x4EFE" />
+	<table type="Y Axis" storageaddress="0x4F1E" />
+	</table>
+	
+	<table name="Knock Detection_KNOCK FACTOR; CYL 6" storageaddress="0x4FAC">
+	<table type="X Axis" storageaddress="0x4F86" />
+	<table type="Y Axis" storageaddress="0x4FA6" />
+	</table>
+	
+	<table name="Knock Detection_KNOCK FACTOR; CYL 7" storageaddress="0x5034">
+	<table type="X Axis" storageaddress="0x500E" />
+	<table type="Y Axis" storageaddress="0x502E" />
+	</table>
+	
+	<table name="Knock Detection_KNOCK FACTOR; CYL 8" storageaddress="0x50BC">
+	<table type="X Axis" storageaddress="0x5096" />
+	<table type="Y Axis" storageaddress="0x50B6" />
+	</table>
 	
    </rom>
   
