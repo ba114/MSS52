@@ -159,7 +159,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <address>0x1B</address>
                     </ecu>
                     <conversions>
-                        <conversion units="%" storagetype="uint16" expr="x*0.1" format="0.0" gauge_min="0" gauge_max="100" gauge_step="10" />
+                        <conversion units="%" storagetype="int16" expr="x*0.1" format="0.0" gauge_min="0" gauge_max="100" gauge_step="10" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="P9" name="** Vehicle Speed" desc="P9-(STATUS_GESCHWINDIGKEIT)" group="0x0B" subgroup="0x13" groupsize="90" target="1">
@@ -185,7 +185,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <address>0x16</address>
                     </ecu>
                     <conversions>
-                        <conversion units="°BTDC" expr="x*0.1" format="0.0" gauge_min="-20" gauge_max="50" gauge_step="5" />
+                        <conversion units="°BTDC" storagetype="int16" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="P111" name="** Ignition Angle - Cyl 2" desc="P111-(STATUS_ZUENDWINKEL)" group="0x0B" subgroup="0x13" groupsize="42" target="1">
@@ -193,7 +193,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <address>0x18</address>
                     </ecu>
                     <conversions>
-                        <conversion units="°BTDC" expr="x*0.1" format="0.0" gauge_min="-20" gauge_max="50" gauge_step="5" />
+                        <conversion units="°BTDC" storagetype="int16" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="P112" name="** Ignition Angle - Cyl 3" desc="P112-(STATUS_ZUENDWINKEL)" group="0x0B" subgroup="0x13" groupsize="90" target="1">
@@ -201,7 +201,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <address>0x1A</address>
                     </ecu>
                     <conversions>
-                        <conversion units="°BTDC" expr="x*0.1" format="0.0" gauge_min="-20" gauge_max="50" gauge_step="5" />
+                        <conversion units="°BTDC" storagetype="int16" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="P113" name="** Ignition Angle - Cyl 4" desc="P113-(STATUS_ZUENDWINKEL)" group="0x0B" subgroup="0x13" groupsize="90" target="1">
@@ -209,7 +209,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <address>0x1C</address>
                     </ecu>
                     <conversions>
-                        <conversion units="°BTDC" expr="x*0.1" format="0.0" gauge_min="-20" gauge_max="50" gauge_step="5" />
+                        <conversion units="°BTDC" storagetype="int16" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="P114" name="** Ignition Angle - Cyl 5" desc="P114-(STATUS_ZUENDWINKEL)" group="0x0B" subgroup="0x13" groupsize="90" target="1">
@@ -217,7 +217,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <address>0x1E</address>
                     </ecu>
                     <conversions>
-                        <conversion units="°BTDC" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
+                        <conversion units="°BTDC" storagetype="int16" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="P115" name="** Ignition Angle - Cyl 6" desc="P115-(STATUS_ZUENDWINKEL)" group="0x0B" subgroup="0x13" groupsize="90" target="1">
@@ -225,7 +225,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <address>0x20</address>
                     </ecu>
                     <conversions>
-                        <conversion units="°BTDC" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
+                        <conversion units="°BTDC" storagetype="int16" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="P116" name="** Ignition Angle - Cyl 7" desc="P116-(STATUS_ZUENDWINKEL)" group="0x0B" subgroup="0x13" groupsize="90" target="1">
@@ -233,7 +233,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <address>0x22</address>
                     </ecu>
                     <conversions>
-                        <conversion units="°BTDC" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
+                        <conversion units="°BTDC" storagetype="int16" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="P117" name="** Ignition Angle - Cyl 8" desc="P117-(STATUS_ZUENDWINKEL)" group="0x0B" subgroup="0x13" groupsize="90" target="1">
@@ -241,7 +241,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <address>0x24</address>
                     </ecu>
                     <conversions>
-                        <conversion units="°BTDC" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
+                        <conversion units="°BTDC" storagetype="int16" expr="x*0.1" format="0.0" gauge_min="-36" gauge_max="50" gauge_step="5" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E13" name="** Lambda Integrator - Bank 1" desc="E13-(TI_LAM_1)" group="0x0B" subgroup="0x13" groupsize="90" target="1">
